@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<main>
+    <h3 th:if="${username != null}" th:text="${'Hello, ' + firstName + '! You are logged in as ' + username}"></h3>
+    <h1>Welcome!</h1>
+    <a th:if="!${username}" href="/login">Log In</a>
+    <a th:if="!${username}" href="/signup"> Sign up</a>
+</main>
+</body>
+</html>
