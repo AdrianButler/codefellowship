@@ -3,6 +3,7 @@ package adrian.codefellowship.controllers;
 import adrian.codefellowship.models.ApplicationUser;
 import adrian.codefellowship.repositories.ApplicationUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,9 @@ public class ApplicationUserController
 {
 	@Autowired
 	private ApplicationUserRepository applicationUserRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	@GetMapping("/")
 	public String getHome(Model model, Principal principal)
@@ -46,14 +50,14 @@ public class ApplicationUserController
 	}
 
 	@PostMapping("/signup")
-	public RedirectView createUser(String username, String password, String firstName, Date dateOfBirth)
+	public RedirectView createUser(String username, String password, String firstname, Date dateOfBirth)
 	{
 		// hash password
-
+		String hashedPassword = passwordEncoder.encode(password);
 		// create new user
-
+		ApplicationUser applicationUser = new ApplicationUser(username, hashedPassword, firstname);
 		// save new user
-
+		applicationUserRepository.save(applicationUser);
 		// auto login will use httpServletRequest
 
 		return new RedirectView("/");
