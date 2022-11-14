@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
 import java.util.Date;
 
@@ -22,6 +24,9 @@ public class ApplicationUserController
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	private HttpServletRequest httpServletRequest;
+
 	@GetMapping("/")
 	public String getHome(Model model, Principal principal)
 	{
@@ -30,8 +35,8 @@ public class ApplicationUserController
 			String username = principal.getName();
 			ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
 
-			model.addAttribute("userName", username);
-			model.addAttribute("firstName", applicationUser.getFirstName());
+			model.addAttribute("username", username);
+			model.addAttribute("firstname", applicationUser.getFirstName());
 		}
 
 		return "index";
@@ -41,6 +46,13 @@ public class ApplicationUserController
 	public String getLoginPage()
 	{
 		return "login";
+	}
+
+	@PostMapping("/login")
+	public RedirectView login()
+	{
+
+		return new RedirectView("/");
 	}
 
 	@GetMapping("/signup")
@@ -59,8 +71,20 @@ public class ApplicationUserController
 		// save new user
 		applicationUserRepository.save(applicationUser);
 		// auto login will use httpServletRequest
-
+		authWithHttpServletRequest(username, password);
 		return new RedirectView("/");
+	}
+	private void authWithHttpServletRequest(String username, String password)
+	{
+		try
+		{
+			httpServletRequest.login(username, password);
+		}
+		catch (Exception exception)
+		{
+			exception.printStackTrace();
+		}
+
 	}
 
 
