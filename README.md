@@ -13,5 +13,14 @@ spring.datasource.password=ENTER YOUR PASSWORD HERE
 
 spring.jpa.hibernate.ddl-auto=update
 spring.jpa.generate-ddl=true
+
+spring.mvc.hiddenmethod.filter.enabled=true
+
+server.error.whitelabel.enabled=false
 ```
 5. Run the application with `./gradlew bootRun`
+6. Visit `localhost:8080` in your browser
+7. Create a new user by visiting `localhost:8080/signup`
+8. Log in with your new user by visiting `localhost:8080/login`
+9. Visit `localhost:8080/users/{id}` to see a specific user's profile
+10. Visit `localhost:8080/myprofile` to see your own profile
