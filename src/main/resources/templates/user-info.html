@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<!-- Fragment: src\main\resources\templates\fragments\header.html -->
+<div th:replace="/fragments/header :: applicationUser"></div>
+<main>
+    <h1 th:text="${viewedUser.getUsername()}"></h1>
+    <img th:src="'/profile-picture.jpg'" alt="profile picture">
+
+    <h2 th:text="${viewedUser.getFirstName()}"></h2>
+
+    <form th:if="${viewedUser.getId().equals(applicationUser.getId())}" action="/post" method="post">
+        <fieldset>
+            <legend>Create a post</legend>
+
+            <label for="postBody">Body</label>
+            <textarea id="postBody" name="postBody" rows="5" cols="50"></textarea>
+
+            <button type="submit">Post</button>
+        </fieldset>
+    </form>
+
+    <h3 th:if="${viewedUser.getPosts().size() > 0}">Posts</h3>
+    <ul>
+        <li th:each="post : ${viewedUser.getPosts()}">
+            <p th:text="${post.getBody()}"></p>
+            <p th:text="${post.getCreatedAt()}"></p>
+        </li>
+    </ul>
+
+
+    <!--    <form th:action="${'/users/' + viewedUserId}" th:method="PUT">-->
+    <!--        <label for="username">Username</label>-->
+    <!--        <input th:value="${viewedUser}" type="text" name="username" id="username"-->
+    <!--               th:disabled="${!applicationUser.equals(viewedUser)}">-->
+    <!--        <input th:if="${applicationUser.equals(viewedUser)}" type="submit" value="Edit user">-->
+    <!--    </form>-->
+</main>
+</body>
+</html>

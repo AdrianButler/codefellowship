@@ -7,7 +7,7 @@
     <title>Title</title>
 </head>
 <body>
-<div th:replace="/fragments/header :: applicationUser"></div>
-<h1>STUFF</h1>
+ERROR FRAGMENT
+<h1 th:fragment="'errorMessage'" th:if="${errorMessage}" th:text="${errorMessage}"></h1>
 </body>
 </html>

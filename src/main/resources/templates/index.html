@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<div th:replace="/fragments/header :: applicationUser"></div>
 <main>
     <h3 th:if="${username != null}" th:text="${'Hello, ' + firstname + '! You are logged in as ' + username} + '.'"></h3>
     <h1>Welcome!</h1>

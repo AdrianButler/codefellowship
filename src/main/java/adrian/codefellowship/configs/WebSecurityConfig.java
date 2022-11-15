@@ -47,9 +47,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 				.and()
 				.formLogin()
 				.loginPage("/login") // assigns a login page to spring security
+				.defaultSuccessUrl("/myprofile") // redirects to this page after successful login
 
 				.and() // sets the route it hits after successful logout
 				.logout()
-				.logoutSuccessUrl("/login");
+				.logoutSuccessUrl("/");
 	}
 }

@@ -7,7 +7,9 @@
     <title>Title</title>
 </head>
 <body>
-<div th:replace="/fragments/header :: applicationUser"></div>
-<h1>STUFF</h1>
+<nav th:if="${applicationUser}" th:fragment="applicationUser">
+    <a href="/myprofile">Profile</a>
+    <a href="/logout">Logout</a>
+</nav>
 </body>
 </html>

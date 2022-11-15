@@ -6,13 +6,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class ApplicationUser implements UserDetails
 {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	private Long id;
+
+	@OneToMany(mappedBy = "owner")
+	List<Post> posts;
 
 	private String username;
 	private String password;
@@ -34,9 +38,19 @@ public class ApplicationUser implements UserDetails
 		this.firstName = firstName;
 	}
 
-	public ApplicationUser()
+	protected ApplicationUser()
 	{
 
+	}
+
+	public List<Post> getPosts()
+	{
+		return posts;
+	}
+
+	public void setPosts(List<Post> posts)
+	{
+		this.posts = posts;
 	}
 
 	public String getUsername()
