@@ -7,7 +7,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.ServletException;
@@ -20,72 +23,51 @@ public class ApplicationUserController
 {
 	@Autowired
 	private ApplicationUserRepository applicationUserRepository;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
 	@Autowired
 	private HttpServletRequest httpServletRequest;
 
-	@GetMapping("/")
-	public String getHome(Model model, Principal principal)
+	@GetMapping("/myprofile")
+	public RedirectView getMyProfile(Principal principal)
 	{
-		if (principal != null)
+		// find the user currently logged in
+		ApplicationUser applicationUser = applicationUserRepository.findByUsername(principal.getName());
+		Long userId = applicationUser.getId();
+
+		return new RedirectView("/user/" + userId);
+	}
+
+	@GetMapping("/user/{id}")
+	public String getUserInfo(@PathVariable Long id, Model model, Principal principal)
+	{
+		ApplicationUser applicationUser = applicationUserRepository.findByUsername(principal.getName());
+		model.addAttribute("applicationUser", applicationUser);
+
+		ApplicationUser viewedUser = applicationUserRepository.findById(id).orElseThrow();
+		model.addAttribute("viewedUser", viewedUser);
+
+		return "user-info";
+	}
+
+	@PutMapping("/user/{id}")
+	public RedirectView updateUserInfo(@PathVariable Long id, String username, Model model, Principal principal,
+	                                   RedirectAttributes redirectAttributes) throws ServletException
+	{
+		if (principal.getName().equals(username))
 		{
-			String username = principal.getName();
-			ApplicationUser applicationUser = applicationUserRepository.findByUsername(username);
+			ApplicationUser updatedUser = applicationUserRepository.findById(id).orElseThrow();
+			updatedUser.setUsername(username);
+			applicationUserRepository.save(updatedUser);
 
-			model.addAttribute("username", username);
-			model.addAttribute("firstname", applicationUser.getFirstName());
+			httpServletRequest.logout();
 		}
-
-		return "index";
-	}
-
-	@GetMapping("/login")
-	public String getLoginPage()
-	{
-		return "login";
-	}
-
-	@PostMapping("/login")
-	public RedirectView login()
-	{
-
-		return new RedirectView("/");
-	}
-
-	@GetMapping("/signup")
-	public String getSignupPage()
-	{
-		return "signup";
-	}
-
-	@PostMapping("/signup")
-	public RedirectView createUser(String username, String password, String firstname, Date dateOfBirth)
-	{
-		// hash password
-		String hashedPassword = passwordEncoder.encode(password);
-		// create new user
-		ApplicationUser applicationUser = new ApplicationUser(username, hashedPassword, firstname);
-		// save new user
-		applicationUserRepository.save(applicationUser);
-		// auto login will use httpServletRequest
-		authWithHttpServletRequest(username, password);
-		return new RedirectView("/");
-	}
-	private void authWithHttpServletRequest(String username, String password)
-	{
-		try
+		else
 		{
-			httpServletRequest.login(username, password);
+			redirectAttributes.addFlashAttribute("errorMessage", "You can only update your own username.");
 		}
-		catch (Exception exception)
-		{
-			exception.printStackTrace();
-		}
-
+		return new RedirectView("/users/" + id);
 	}
+
+
 
 
 }
