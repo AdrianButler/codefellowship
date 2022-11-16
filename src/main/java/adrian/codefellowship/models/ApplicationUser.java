@@ -4,9 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 public class ApplicationUser implements UserDetails
@@ -16,7 +14,19 @@ public class ApplicationUser implements UserDetails
 	private Long id;
 
 	@OneToMany(mappedBy = "owner")
-	List<Post> posts;
+	private List<Post> posts;
+
+	@ManyToMany
+	@JoinTable
+			(
+					name = "followers_to_following",
+					joinColumns = {@JoinColumn(name = "userWhoFollows")},
+					inverseJoinColumns = {@JoinColumn(name = "followedUser")}
+			)
+	private Set<ApplicationUser> following = new HashSet<>();
+
+	@ManyToMany(mappedBy = "following")
+	private Set<ApplicationUser> followers = new HashSet<>();
 
 	private String username;
 	private String password;
@@ -41,6 +51,26 @@ public class ApplicationUser implements UserDetails
 	protected ApplicationUser()
 	{
 
+	}
+
+	public Set<ApplicationUser> getFollowing()
+	{
+		return following;
+	}
+
+	public void setFollowing(Set<ApplicationUser> following)
+	{
+		this.following = following;
+	}
+
+	public Set<ApplicationUser> getFollowers()
+	{
+		return followers;
+	}
+
+	public void setFollowers(Set<ApplicationUser> followers)
+	{
+		this.followers = followers;
 	}
 
 	public List<Post> getPosts()

@@ -15,7 +15,7 @@
 
     <h2 th:text="${viewedUser.getFirstName()}"></h2>
 
-    <form th:if="${viewedUser.getId().equals(applicationUser.getId())}" action="/post" method="post">
+    <form th:if="${viewedUser.id.equals(applicationUser.Id)}" action="/post" method="post">
         <fieldset>
             <legend>Create a post</legend>
 
@@ -31,6 +31,27 @@
         <li th:each="post : ${viewedUser.getPosts()}">
             <p th:text="${post.getBody()}"></p>
             <p th:text="${post.getCreatedAt()}"></p>
+        </li>
+    </ul>
+
+    <form th:if="${!viewedUser.id.equals(applicationUser.id)}" th:method="PUT" th:action="${'/follow-user/' + viewedUser.id}">
+        <fieldset>
+            <button type="submit">Follow</button>
+        </fieldset>
+    </form>
+
+    <h2>Users followed</h2>
+    <ul>
+        <li th:each="user : ${viewedUser.following}">
+            <a th:href="${'/user/' + user.id}" th:text="${user.username}"></a>
+        </li>
+    </ul>
+
+    <h2>Followers</h2>
+
+    <ul>
+        <li th:each="user : ${viewedUser.followers}">
+            <a th:href="${'/user/' + user.id}" th:text="${user.username}"></a>
         </li>
     </ul>
 

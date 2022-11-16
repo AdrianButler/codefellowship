@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<div th:replace="/fragments/header :: applicationUser"></div>
+<body>
+<main>
+    <ul>
+        <li th:each="post : ${posts}">
+            <a th:text="${post.getOwner().getUsername()}" th:href="${'/user/' + post.getOwner().id}"></a>
+            <p th:text="${post.getBody()}"></p>
+            <p th:text="${post.getCreatedAt()}"></p>
+        </li>
+    </ul>
+</main>
+</body>
+</html>
