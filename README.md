@@ -24,3 +24,8 @@ server.error.whitelabel.enabled=false
 8. Log in with your new user by visiting `localhost:8080/login`
 9. Visit `localhost:8080/users/{id}` to see a specific user's profile
 10. Visit `localhost:8080/myprofile` to see your own profile
+
+- You can follow another user by pressing the "Follow" button on their profile page
+- You can post by navigating to your own profile and filling out the form at the bottom of the page
+- You can see all users by visiting `localhost:8080/users`
+- You can see all posts by visiting `localhost:8080/feed`

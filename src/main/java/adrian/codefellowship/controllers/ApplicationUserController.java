@@ -26,6 +26,29 @@ public class ApplicationUserController
 	@Autowired
 	private HttpServletRequest httpServletRequest;
 
+	@GetMapping("/users")
+	public String getUsersPage(Model model)
+	{
+		model.addAttribute("users", applicationUserRepository.findAll());
+		return "users";
+	}
+	@PutMapping("/follow-user/{id}")
+	public RedirectView followUser(@PathVariable Long id, Principal principal)
+	{
+		ApplicationUser userToFollow = applicationUserRepository.findById(id).orElseThrow(); // get user to follow
+		ApplicationUser currentUser = applicationUserRepository.findByUsername(principal.getName()); // get current user
+
+		if (userToFollow.getUsername().equals(currentUser.getUsername()))
+		{
+			throw new IllegalArgumentException("Following yourself is a bad idea!");
+		}
+
+		currentUser.getFollowing().add(userToFollow); // follows the selected user
+		applicationUserRepository.save(currentUser);
+
+		return new RedirectView("/user/" + id);
+	}
+
 	@GetMapping("/myprofile")
 	public RedirectView getMyProfile(Principal principal)
 	{
@@ -41,6 +64,7 @@ public class ApplicationUserController
 	{
 		ApplicationUser applicationUser = applicationUserRepository.findByUsername(principal.getName());
 		model.addAttribute("applicationUser", applicationUser);
+
 
 		ApplicationUser viewedUser = applicationUserRepository.findById(id).orElseThrow();
 		model.addAttribute("viewedUser", viewedUser);
@@ -66,8 +90,6 @@ public class ApplicationUserController
 		}
 		return new RedirectView("/users/" + id);
 	}
-
-
 
 
 }
